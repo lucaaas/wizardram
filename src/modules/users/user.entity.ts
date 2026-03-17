@@ -8,6 +8,6 @@ export class User {
     @Column()
     telegramId: number;
 
-    @Column({nullable: true})
+    @Column({nullable: true, type: "bigint"})
     connectedGroupId?: number;
 }

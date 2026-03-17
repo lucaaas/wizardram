@@ -4,6 +4,8 @@ import {AppService} from './app.service';
 import {ConfigModule} from "@nestjs/config";
 import {User} from "./modules/users/user.entity";
 import {TypeOrmModule} from "@nestjs/typeorm";
+import {UsersModule} from "./modules/users/users.module";
+import {BotService} from "./services/bot.service";
 
 @Module({
   imports: [
@@ -18,9 +20,10 @@ import {TypeOrmModule} from "@nestjs/typeorm";
       entities: [User],
       synchronize: process.env.NODE_ENV === 'development',
     }),
+    UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, BotService],
 })
 export class AppModule {
 }
