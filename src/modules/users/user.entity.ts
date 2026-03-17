@@ -9,5 +9,5 @@ export class User {
     telegramId: number;
 
     @Column({nullable: true})
-    connectedGroupId: number | undefined;
+    connectedGroupId?: number;
 }

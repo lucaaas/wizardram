@@ -7,6 +7,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -17,7 +18,6 @@ import {TypeOrmModule} from "@nestjs/typeorm";
       entities: [User],
       synchronize: process.env.NODE_ENV === 'development',
     }),
-    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService],

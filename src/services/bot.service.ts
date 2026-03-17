@@ -15,6 +15,7 @@ export class BotService {
     }
 
     private addListeners(): void {
+        this.bot.on('message', (info) => console.log(info.msg))
         this.bot.command('connect', )
     }
 
