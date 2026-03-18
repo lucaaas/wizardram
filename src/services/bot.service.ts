@@ -21,37 +21,37 @@ export class BotService implements OnModuleInit {
   }
 
   private addListeners(): void {
-    this.bot.command('connect', (ctx) => this.connect(ctx));
+    this.bot.command('connect', this.connect);
     this.bot.command('id', this.getChatId);
   }
 
+  
   private async connect(ctx: CommandContext<Context>): Promise<void> {
     if (ctx.chat.type === 'private') {
       if (ctx.match) {
-        let groupId: number;
-        const group = await ctx.api.getChat(ctx.match)
+        try {
+          const group = await ctx.api.getChat(ctx.match)
+          const groupId: number = group.id;
 
-        if (group) {
-          groupId = group.id;
-        } else {
-          ctx.reply('Não consegui encontrar o grupo. Verifique se o username está correto e se o bot tem acesso ao grupo.');
-          return;
-        }
+          const memberStatus: String = await this.getMemberRole(ctx.chatId, groupId);
+          const botStatus: String = await this.getMemberRole(ctx.me.id, groupId);
+          if (botStatus === 'administrator' && (memberStatus === 'creator' || memberStatus === 'administrator')) {
+            let user: User;
+            try {
+              user = await this.userService.getByTelegramId(ctx.chatId);
+            } catch (e) {
+              user = new User();
+              user.telegramId = ctx.chatId;
+            }
 
-        const memberStatus: String = await this.getMemberRole(ctx.chatId, groupId);
-        const botStatus: String = await this.getMemberRole(ctx.me.id, groupId);
-        if (botStatus === 'administrator' && (memberStatus === 'creator' || memberStatus === 'administrator')) {
-          let user: User;
-          try {
-            user = await this.userService.getByTelegramId(ctx.chatId);
-          } catch (e) {
-            user = new User();
-            user.telegramId = ctx.chatId;
+            user.connectedGroupId = groupId;
+            await this.userService.save(user);
+            ctx.reply(`Conectado ao grupo _${group.title}_ com sucesso\\!`, {parse_mode: 'MarkdownV2'});
+          } else {
+            ctx.reply('Para conectar você e o bot precisam ser administradores do grupo.')
           }
-
-          user.connectedGroupId = groupId;
-          await this.userService.save(user);
-          ctx.reply(`Conectado ao grupo _${group.title}_ com sucesso\\!`, {parse_mode: 'MarkdownV2'});
+        } catch (e) {
+          ctx.reply('Não consegui encontrar o grupo. Verifique se o username está correto e se o bot tem acesso ao grupo.');
         }
       } else {
         ctx.reply('Preciso que você me envie o código do grupo ou o username.')
