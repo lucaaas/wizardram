@@ -6,7 +6,7 @@ export class Group {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({type: 'bigint'})
   telegramId: number;
 
   @OneToMany(() => GroupUser, (groupUser) => groupUser.group)

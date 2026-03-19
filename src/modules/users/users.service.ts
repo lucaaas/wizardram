@@ -5,14 +5,23 @@ import {User} from "./user.entity";
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>,) {
+  constructor(@InjectRepository(User) private userRepository: Repository<User>,) {
+  }
+
+  public async getByTelegramIdOrCreate(telegramId: number): Promise<User> {
+    let user: User;
+
+    try {
+      user = await this.userRepository.findOneOrFail({where: {'telegramId': telegramId}});
+    } catch (error) {
+      user = new User();
+      user.telegramId = telegramId;
     }
 
-    public getByTelegramId(telegramId: number): Promise<User> {
-        return this.userRepository.findOneOrFail({where: {'telegramId': telegramId}});
-    }
+    return user;
+  }
 
-    public save(user: User): Promise<User> {
-        return this.userRepository.save(user);
-    }
+  public save(user: User): Promise<User> {
+    return this.userRepository.save(user);
+  }
 }
