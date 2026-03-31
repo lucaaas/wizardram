@@ -8,6 +8,8 @@ import {UsersModule} from "./modules/users/users.module";
 import {BotService} from "./services/bot.service";
 import {GroupsModule} from "./modules/groups/groups.module";
 import {Group, GroupUser} from "./modules/groups/group.entity";
+import {RequireAdminDecorator} from "./decorators/requireAdmin.decorator";
+import {RequireConnectedGroupDecorator} from "./decorators/requireConnectedGroup.decorator";
 
 @Module({
   imports: [
@@ -26,7 +28,7 @@ import {Group, GroupUser} from "./modules/groups/group.entity";
     GroupsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BotService],
+  providers: [AppService, BotService, RequireAdminDecorator, RequireConnectedGroupDecorator],
 })
 export class AppModule {
 }
