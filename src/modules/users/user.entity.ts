@@ -9,6 +9,9 @@ export class User {
   @Column()
   telegramId: number;
 
+  @Column({nullable: true})
+  username?: string;
+
   @Column({nullable: true, type: "bigint"})
   connectedGroupId?: number;
 
