@@ -6,6 +6,10 @@ import {User} from "./modules/users/user.entity";
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {UsersModule} from "./modules/users/users.module";
 import {BotService} from "./services/bot.service";
+import {GroupsModule} from "./modules/groups/groups.module";
+import {Group, GroupUser} from "./modules/groups/group.entity";
+import {RequireAdminDecorator} from "./decorators/requireAdmin.decorator";
+import {RequireConnectedGroupDecorator} from "./decorators/requireConnectedGroup.decorator";
 
 @Module({
   imports: [
@@ -17,13 +21,14 @@ import {BotService} from "./services/bot.service";
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [User],
+      entities: [User, Group, GroupUser],
       synchronize: process.env.NODE_ENV === 'development',
     }),
     UsersModule,
+    GroupsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BotService],
+  providers: [AppService, BotService, RequireAdminDecorator, RequireConnectedGroupDecorator],
 })
 export class AppModule {
 }
